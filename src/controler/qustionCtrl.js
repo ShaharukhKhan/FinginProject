@@ -31,15 +31,15 @@ module.exports = {
 
   updateQuestion: async (req, res) => {
     try {
+      let arrayValue = [];
       const id = req.params.id;
       const addReplyIds = req.body.addReplyIds; // Array of addReply IDs to be added
-      const objectIdAddReplyIds = addReplyIds.map((id) =>
-        mongoose.Types.ObjectId(id)
-      );
+      let eligible = addReplyIds.split(",");
+      arrayValue.push(eligible);
 
       const qustion = await Qustion.findByIdAndUpdate(
         { _id: id },
-        { $push: { addReply: { $each: objectIdAddReplyIds } } },
+        { $push: { addReply: { $each: eligible } } },
         { new: true }
       );
 
@@ -82,4 +82,35 @@ module.exports = {
       });
     }
   },
+
+  getQustionDetails: async (req, res) => {
+    try {
+      let id = req.params.id;
+      console.log(id, "idd");
+      let value = await Qustion.findOne({ _id: id }).populate("addReply");
+      //.populate("addReply.name")
+
+      if (value) {
+        res.status(200).json({
+          status: true,
+          message: "gettig single chat detail",
+          result: value,
+        });
+      } else {
+        let value = await communityChatModel.find().populate("addReply.name");
+        res.status(200).json({
+          status: true,
+          message: "gettig all chat detail",
+          result: value,
+        });
+      }
+    } catch (error) {
+      res.status(401).json({
+        status: false,
+        message: "something went wrong",
+        error: error.message,
+      });
+    }
+  },
 };
+

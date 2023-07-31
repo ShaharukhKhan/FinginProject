@@ -16,9 +16,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const lenderRouter = require("./router/lenderRoute");
 const qustionRouter = require("./router/qustionRoute");
+const serviceRouter = require("./router/service")
 
 app.use("/api/lender", lenderRouter);
 app.use("/api", qustionRouter);
+app.use("/api", serviceRouter);
 
 app.listen(PORT, () => {
   console.log(`connection is live at port no. ${PORT}`);
